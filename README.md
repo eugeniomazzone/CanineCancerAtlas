@@ -4,10 +4,10 @@
 All scripts presented here were tested to work properly for PRJNA752630 BioProject. Before applying the code to other datasets, carefully go through the scrips to make sure everythig is correctly set.
 This applies specifically to the **_RunPreProcess.sh_** script where SRA metadata are accessed (SraRunTable.txt). 
 Moreover, to perform statistical analyses on two (or more) histotypes/BioPorjects simultaneusly, please append them in the R scripts headers (reads as the following).
-'''
+```
 biop <- c('PRJNA752630')
 tt <- c('B-cell Lymphoma')
-'''
+```
 
 ## General Informations
 
