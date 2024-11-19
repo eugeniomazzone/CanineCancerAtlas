@@ -92,10 +92,10 @@ This will produce a file called: *NRPCC.tsv*. Please create a copy, call it *NRP
 | SRR... | ... |   30   | Metastasis | 
 | SRR... | ... |   30   | Duplicate |
 
-Use "Tumor" if tumor coverage is to low.
-Use "Normal" if normal coverage is to low.
-Use "Metastasis" if sample is from metastatic tissue (and you want to exclude it).
-Use "Duplicate" if sample is from same tissue sample (and you want to exclude it).
+Use "Tumor" if tumor coverage is to low. <br/>
+Use "Normal" if normal coverage is to low. <br/>
+Use "Metastasis" if sample is from metastatic tissue (and you want to exclude it). <br/>
+Use "Duplicate" if sample is from same tissue sample (and you want to exclude it). <br/>
 
 
 After that you can finish annotating samples.
