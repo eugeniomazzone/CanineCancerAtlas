@@ -4,8 +4,6 @@ library(maftools)
 library(viridis)
 library(ggplot2)
 library(dplyr)
-library(writexl)
-library(xlsx)
 library(sigminer)
 library(BSgenome.Cfamiliaris.UCSC.canFam3)
 
@@ -17,7 +15,7 @@ dir.create("SignatureSBS")
 
 #### DEFINING THE BIOPROJECTS
 
-biop <- c('PRJNA752630')
+biop <- c('/Annotation/SNP/')
 tt <- c('B-cell Lymphoma')
 cds <- c(57)
 
@@ -26,7 +24,7 @@ cds <- c(57)
 mafs <- data.frame()
 clinical <- data.frame()
 for (n in 1:length(biop)) {
-	path2<-paste(biop[n],'/SNP/',sep='')
+	path2<-biop[n]
 	files2 <- list.files(path2)
 	files2=files2[!grepl(files2, pattern='outQC|meta|dups')]
 	mafs2 <- annovarToMaf(paste(path2,files2,sep=''), table='ensGene',ens2hugo = FALSE, refBuild="canFam3")
@@ -94,12 +92,7 @@ for (tp in unique(full_df$TumorType)){
 	dev.off()
 }
 
-wb <- createWorkbook()  
-message("Creating sheet", 'SigSim')
-sheet <- createSheet(wb, sheetName = 'SigSim')
-message("Adding data frame", 'SigSim')
-addDataFrame(sigDf, sheet, row.names = T)
-saveWorkbook(wb, "Sig_SBS_Similarity.xlsx")  
+write.table(file='Sig_SBS_Similarity.csv',sigDf, row.names=FALSE)
 
 ###### DBS
 sigDf <- data.frame()
@@ -133,17 +126,6 @@ for (tp in unique(full_df$TumorType)[c(1:6,8,9,10)]){
 	dev.off()
 }
 
-wb <- createWorkbook()  
-message("Creating sheet", 'SigSim')
-sheet <- createSheet(wb, sheetName = 'SigSim')
-message("Adding data frame", 'SigSim')
-addDataFrame(sigDf, sheet, row.names = T)
-saveWorkbook(wb, "Sig_DBS_Similarity.xlsx")  
 
-
-
-
-
-
-
+write.table(file='Sig_DBS_Similarity.csv',sigDf, row.names=FALSE)
 

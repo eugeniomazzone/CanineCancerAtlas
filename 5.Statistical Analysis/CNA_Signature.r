@@ -1,23 +1,21 @@
 options(java.parameters = "-Xmx20000m")
 
-library(xlsx)
 library(sigminer)
 
 #### CREATING DIR FOR LATER
 dir.create("CNA_out")
 
 #### DEFINING THE BIOPROJECTS
-biop <- c('PRJNA752630')
+biop <- c('/Annotation/TCN/')
 tt <- c('B-cell Lymphoma')
 
 sigDf <- data.frame()
-wb <- createWorkbook()
 for (n in 1:length(unique(tt))){
 	df <- data.frame()
 	for (Project in biop[tt==tt[n]]) {
-		subFiles <- list.files(paste0(Project,'/TCN/'))
+		subFiles <- list.files(biop[n])
 		for (samp in subFiles) {
-			sample <- paste0(biop[n],'/TCN/',samp)
+			sample <- paste0(biop[n],samp)
 			openStat <- read.table(sample, header=T)
 			colnames(openStat)[1]='Sample'
 			openStat$Istotype <- tt[n]
@@ -56,8 +54,5 @@ for (n in 1:length(unique(tt))){
 	p
 }
 
-sheet <- createSheet(wb, sheetName = paste0('cn',tt[n],'List'))
-addDataFrame(sigDf, sheet, row.names = T)
-saveWorkbook(wb, "CNA_Sig_Similarity.xlsx") 
-
+write.table(file='CNA_Sig_Similarity.tsv', sigDf, sep='\t',quote=F)
 

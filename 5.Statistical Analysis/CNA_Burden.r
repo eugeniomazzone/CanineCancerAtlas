@@ -1,17 +1,16 @@
 options(java.parameters = "-Xmx20000m")
 
-library(xlsx)
 library(sigminer)
 library(dplyr)
 
-biop <- c('PRJNA752630')
+biop <- c('/Annotation/TCN/')
 tt <- c('B-cell Lymphoma')
 
 df <- data.frame()
 for (n in 1:length(biop)){
-	subFiles <- list.files(paste0(biop[n],'/TCN/'))
+	subFiles <- list.files(biop[n])
 	for (samp in subFiles) {
-		sample <- paste0(biop[n],'/TCN/',samp)
+		sample <- paste0(biop[n],samp)
 		openStat <- read.table(sample, header=T)
 		colnames(openStat)[1]='Sample'
 		openStat$Istotype <- tt[n]
@@ -26,7 +25,11 @@ results <- data.frame()
 isto <- 'ALL'
 df <- df[df$TCN!=2,] ### Loss-Gain will not be considered
 alteredSample <- df %>% group_by(sample, Istotype) %>% summarize( ALT_L = sum(Width))
-genomeLeng <- sum(read.table('canine_cytoband_for_gistic_order.txt')[1:38,'V5'])
+cyto <- read.table('/refFiles/cytoBandIdeo.txt', header=T)[1:38,c('chrom','chromEnd')]
+cyto$chrom <- as.numeric(sapply(cyto$chrom, function(x) unlist(strsplit(x, 'chr'))[2]))
+cyto <- cyto[order(as.numeric(cyto$chrom)),]
+colnames(cyto)[2]<- 'ChrLen'
+genomeLeng <- sum(cyto$ChrLen)
 alteredSample$cnaBurden <- alteredSample$ALT_L/genomeLeng
 
 df2 <- quantile(alteredSample$cnaBurden)
@@ -42,11 +45,7 @@ for (isto in unique(alteredSample$Istotype)){
 	results <- rbind(results,df2)
 }
 
-
-wb <- createWorkbook()
-sheet <- createSheet(wb, sheetName = 'CNA Burden')
-addDataFrame(results, sheet, row.names = T)
-saveWorkbook(wb, "CNA_Burden.xlsx") 
+write.table(file='CNA_Burden.tsv', results, sep='\t',quote=F)
 
 
 

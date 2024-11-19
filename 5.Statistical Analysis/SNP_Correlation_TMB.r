@@ -2,11 +2,11 @@ library(maftools)
 library(viridis)
 library(ggplot2)
 library(dplyr)
-library(writexl)
-
+library(tidyr)
+lybrary(reshape2)
 #### DEFINING THE BIOPROJECTS
 
-biop <- c('PRJNA752630')
+biop <- c('/Annotation/SNP/')
 tt <- c('B-cell Lymphoma')
 cds <- c(57)
 
@@ -16,7 +16,7 @@ mafs <- data.frame()
 clinical <- data.frame()
 for (n in 1:length(biop)) {
 
-path2<-paste(biop[n],'/SNP/',sep='')
+path2<-biop[n]
 files2 <- list.files(path2)
 files2=files2[!grepl(files2, pattern='outQC|meta|dups')]
 mafs2 <- annovarToMaf(paste(path2,files2,sep=''), table='ensGene',ens2hugo = FALSE, refBuild="canFam3")
@@ -111,9 +111,11 @@ rownames(support) <- support$Histotype
 gene_order <- dplyr::count(for_coo, group_by=Hugo_Symbol)
 gene_order <- arrange(gene_order, -n)
 
+last_df$extraH <- '-'
 to_plot <- last_df[gene_order$group_by[1:20],]
 
 to_plot$genes <- rownames(to_plot)
+to_plot$extraH <- NULL
 melted_plot <- melt(to_plot)
 melted_plot$variable <- as.character(melted_plot$variable)
 

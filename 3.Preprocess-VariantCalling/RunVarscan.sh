@@ -1,7 +1,7 @@
 #!/bin/bash
 
-GENOME='/genome/canFam3.fa.gz'
-VCF='/vcf1/Filtred_Published1.vcf.gz'
+GENOME='/refFiles/genome/canFam3.fa.gz'
+VCF='/refFiles/vcf1/Filtred_Published1.vcf.gz'
 
 mkdir Varscan
 
@@ -11,6 +11,6 @@ do
 	TUMOR=$( echo $line | cut -d, -f2)
 	echo $NORMAL 
 	echo $TUMOR
-	sh Varscan.sh $NORMAL $TUMOR
+	./Varscan.sh $NORMAL $TUMOR
 
 done

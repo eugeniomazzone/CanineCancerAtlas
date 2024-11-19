@@ -1,7 +1,7 @@
 library(maftools)
 library(viridis)
 
-biop <- c('PRJNA752630')
+biop <- c('/Annotation/SNP/')
 tt <- c('B-cell Lymphoma')
 
 mafs <- data.frame()
@@ -9,7 +9,7 @@ clinical <- data.frame()
 
 for (n in 1:length(biop)) {
 
-path2<-paste(biop[n],'/SNP/',sep='')
+path2<-biop[n]
 files2 <- list.files(path2, pattern='canFam3')
 files2=files2[!grepl(files2, pattern='outQC')]
 files2=files2[!grepl(files2, pattern='meta')]

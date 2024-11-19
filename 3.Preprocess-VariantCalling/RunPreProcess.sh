@@ -1,7 +1,7 @@
 #!/bin/bash
 
-genome='/genome/canFam3.fa.gz'
-vcf='/vcf1/Filtred_Published1.vcf.gz'
+genome='/refFiles/genome/canFam3.fa.gz'
+vcf='/refFiles/vcf1/Filtred_Published1.vcf.gz'
 
 mkdir Align
 mkdir Convert
@@ -12,7 +12,7 @@ mkdir BQRS
 
 IDENTIFIER=28
 BQRS_CONT=$(ls BQRS/ | cut -f1 -d.)
-cat SraRunTable_test.csv | sed -n '2,$ p' | cut -f1,$IDENTIFIER -d, | grep DLBCL | sed 's/cf_DLBCL/Tumor,/g' > AllSample.txt
+cat SraRunTable.txt | sed -n '2,$ p' | cut -f1,$IDENTIFIER -d, | grep DLBCL | sed 's/cf_DLBCL/Tumor,/g' > AllSample.txt
 IDENTIFIER=28
 cat SraRunTable_test.csv | sed -n '2,$ p' | cut -f1,$IDENTIFIER -d, | grep Punch | sed 's/cf_Punch/Normal,/g' >> AllSample.txt
 
@@ -32,5 +32,12 @@ do
 	else
 		echo ==================== $SAMPLE will NOW be processed ==================== 
 		sh PreProcess.sh $SAMPLE
+		rm -rf $SAMPLE
 	fi
 done
+
+rm -rf Align
+rm -rf Convert
+rm -rf Sorted
+rm -rf Groups
+rm -rf MDups

@@ -2,7 +2,6 @@ library(maftools)
 library(viridis)
 library(ggplot2)
 library(dplyr)
-library(xlsx)
 
 #### CREATING DIR FOR LATER
 
@@ -11,7 +10,7 @@ dir.create("CoocMAF")
 
 #### DEFINING THE BIOPROJECTS
 
-biop <- c('PRJNA752630')
+biop <- c('/Annotation/SNP/')
 tt <- c('B-cell Lymphoma')
 cds <- c(57)
 
@@ -21,7 +20,7 @@ mafs <- data.frame()
 clinical <- data.frame()
 for (n in 1:length(biop)) {
 
-path2<-paste(biop[n],'/SNP/',sep='')
+path2<-biop[n]
 files2 <- list.files(path2)
 files2=files2[!grepl(files2, pattern='outQC|meta|dups')]
 mafs2 <- annovarToMaf(paste(path2,files2,sep=''), table='ensGene',ens2hugo = FALSE, refBuild="canFam3")
@@ -53,7 +52,6 @@ mafs <-mafs[!grepl('TTN',mafs$Hugo_Symbol),]
 
 full_df <- merge(mafs, clinical, by='Tumor_Sample_Barcode')
 #### Making coocurrence for each istotype
-wb <- createWorkbook()  
 
 for(tt in unique(full_df$TumorType)) {
 mafsToWork <- subset(full_df, TumorType==tt)
@@ -63,14 +61,8 @@ soma <- somaticInteractions(maf = objMaf, pvalue = c(0.05, 0.1), fontSize=0.6)
 dev.off()
 write.csv(file=paste0('CoocMAF/cooc_',tt,'.csv'), soma, row.names=FALSE)
 
-message("Creating sheet", 'Driver Details')
-sheet <- createSheet(wb, sheetName = tt)
-message("Adding data frame", 'Driver Details')
-addDataFrame(soma, sheet, row.names = F)
-
 }
 
-saveWorkbook(wb, "Small_Mut_cooc.xlsx") 
 
 
 

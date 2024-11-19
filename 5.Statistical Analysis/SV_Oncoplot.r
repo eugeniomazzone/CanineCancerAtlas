@@ -4,16 +4,14 @@ library(maftools)
 library(viridis)
 library(ggplot2)
 library(dplyr)
-library(writexl)
-library(xlsx)
 library(GenomicRanges)
 library(rtracklayer)
 library(ComplexHeatmap)
 
-biop <- c('PRJNA752630')
+biop <- c('/Annotation/Delly_sansa_tsv/')
 tt <- c('B-cell Lymphoma')
 
-bt.genes <- rtracklayer::import('Canis_lupus_familiaris.CanFam3.1.104.gtf.gz')
+bt.genes <- rtracklayer::import('/refFiles/Canis_lupus_familiaris.CanFam3.1.104.gtf.gz')
 bt.genes <- subset(bt.genes, select=c(gene_id,gene_name))
 bt.genes <- data.frame(bt.genes)
 bt.genes <- unique(bt.genes[c('gene_id','gene_name','start','end','seqnames')])
@@ -30,7 +28,7 @@ bt.genes$gene_id <- NULL
 sv <- data.frame()
 for (n in 1:length(biop)) {
 	print(biop[n])
-	path2<-paste(biop[n],'/SV/',sep='')
+	path2<-biop[n]
 	files2 <- list.files(path2)
 	for (f in files2) { 
 		sv2 <- read.table(paste0(path2,f), sep='\t',header=T, row.names=NULL)
@@ -44,7 +42,6 @@ for (n in 1:length(biop)) {
 
 
 sv <- sv[!is.na(sv$query.startfeature) | !is.na(sv$query.endfeature) | !is.na(sv$query.containedfeature),]
-sv <- sv[sv$query.svtype !='DEL',]
 
 mySvDf <- data.frame()
 for(tp in unique(tt)){ 
@@ -94,18 +91,6 @@ dfSV <- M[AmpToShow,]
 dfSV[(dfSV!='DUP' & dfSV!='MultiHit' & dfSV!='BND' & dfSV!='INS' & dfSV!='INV')]=''
 dfSV[is.na(dfSV)]=''
 
-metadataSample <- unique(sv[c('sample','Histotype')])
-metadataSample$sample <- sapply(metadataSample$sample, function(x) unlist(strsplit(x,'\\.'))[1])
-fabcolors = c('#F19A94','#3E6DCA','#27DF7A','#E88ABD','#B0D022','#AF541F','#FFDC40','#80C5ED','#FF3953')
-col.assign <- setNames(fabcolors, unique(metadataSample$Histotype))
-rownames(metadataSample) <- metadataSample$sample
-match.id <- match(metadataSample$sample, colnames(dfSV))
-match.id <- (1:nrow(metadataSample))[!is.na(match.id)]
-df <- data.frame(sample=metadataSample[match.id, 'sample'], Histotype=metadataSample[match.id, 'Histotype'])
-rownames(df) <- metadataSample[match.id, 'sample']
-li <- list(Histotype = col.assign[!is.na(names(col.assign))])
-mix.ha <- HeatmapAnnotation(df = df['Histotype'], col = li)
-
 sample.order <- NULL
 for (tp in unique(metadataSample$Histotype))
 {
@@ -133,7 +118,7 @@ ht1 = oncoPrint(dfSV,
           alter_fun = alter_fun, col = col, 
           remove_empty_columns = TRUE, remove_empty_rows = TRUE,
           pct_side = "right", row_names_side = "left",
-          use_raster=TRUE, bottom_annotation = mix.ha , column_order=sample.order)
+          use_raster=TRUE, column_order=sample.order)
   
 tiff(filename='oncoplotSV.tiff', width=6000, height=3000, res=300)
 draw(ht1)

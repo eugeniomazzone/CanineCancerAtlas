@@ -1,7 +1,7 @@
 #! /bin/bash
 
-GENOME='/genome/canFam3.fa.gz'
-VCF='/vcf1/Filtred_Published1.vcf.gz'
+GENOME='/refFiles/genome/canFam3.fa.gz'
+VCF='/refFiles/vcf1/Filtred_Published1.vcf.gz'
 
 SAMPLE=$1
 
@@ -10,8 +10,9 @@ fasterq-dump -e 20 -p './'$SAMPLE
 bgzip -@ 20 $SAMPLE'_1.fastq' 
 bgzip -@ 20 $SAMPLE'_2.fastq'
 
-bwa mem -t 20 $GENOME $SAMPLE'_1.fastq.gz' $SAMPLE'_2.fastq.gz' > Align/$SAMPLE'.aln.sam'
+bwa mem -t 2 $GENOME $SAMPLE'_1.fastq.gz' $SAMPLE'_2.fastq.gz' > Align/$SAMPLE'.aln.sam'
 rm $SAMPLE'_1.fastq.gz' && rm $SAMPLE'_2.fastq.gz'
+rm $SAMPLE'_1.fastq' && rm $SAMPLE'_2.fastq'
 
 gatk SamFormatConverter -I Align/$SAMPLE'.aln.sam' -O Convert/$SAMPLE'.aln.bam' 
 rm $SAMPLE'.aln.sam'

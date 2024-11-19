@@ -5,7 +5,7 @@ All scripts presented here were tested to work properly for PRJNA752630 BioProje
 This applies specifically to the **_RunPreProcess.sh_** script where SRA metadata are accessed (SraRunTable.txt). 
 Moreover, to perform statistical analyses on two (or more) histotypes/BioPorjects simultaneusly, please append them in the R scripts headers (reads as the following).
 ```
-biop <- c('PRJNA752630')
+biop <- c('/Annotation/SNP/')
 tt <- c('B-cell Lymphoma')
 ```
 
@@ -14,6 +14,97 @@ tt <- c('B-cell Lymphoma')
 The Canine Cancer Genome Atlas (CCGA) is a project that aims to build and mantain a comprehensive repository of genetic aberrations found in canine neoplasms.
 This repository aims to give an overview of the bioinformatic tools and detail the core statistical analysis performed on the data.
 To have an in depth explanation of the method, please refer to [The Genetic Landscape of Canine Tumors: Insights from the Canine Cancer Genome Atlas (CCGA)](https://doi.org/10.21203/rs.3.rs-5025541/v1).
+
+## Docker Build and Launch
+
+In the following, you can find the command to run the analysis on the example dataset, as intended.
+
+- Clone the repository:
+```
+git clone https://github.com/eugeniomazzone/CanineCancerAtlas
+```
+- Enter the newly created directory and compile docker image (can take a while).
+```
+cd CanineCancerAtlas/1.Docker
+docker build -t canineatlas .
+```
+- Then mount the image and all related directory.
+```
+cd CanineCancerAtlas/
+docker run -it --rm 
+	-v <PATH TO REPO>/CanineCancerAtlas/4.Annotation-Formatting/:/Annotation \
+	-v <PATH TO REPO>/CanineCancerAtlas/3.Preprocess-VariantCalling/:/WorkDir 
+	-v <PATH TO REPO>/CanineCancerAtlas/2.SupportFiles/:/refFiles 
+	-v <PATH TO REPO>/CanineCancerAtlas/5.Statistical\ Analysis/:/Analysis canineatlas 
+```
+
+## Commands inside the docker container
+
+#### Reference Files
+- Collecting and indexing Reference files. This will download and index each file needed for preprocessing, variant calls and some analysis.
+```
+cd /refFiles
+./init_ref.sh
+```
+#### Preprocessing & Variant Calling
+- Dowinloading and preprocessing the data.
+```
+cd /WorkDir
+
+./RunPreprocess.sh
+```
+- Variant Call
+```
+cd /WorkDir
+./RunPON.sh
+
+./RunMutect.sh
+./RunStrelka.sh
+./RunVarscan.sh
+
+./RunASCAT.sh
+./RunDelly.sh
+```
+- Coverage calculation, SNP cleaning and majority voting.
+```
+cd /WorkDir
+./cov.sh
+./SNP_Preparation.sh
+./MajVoting.sh
+```
+#### Gene Annotations & QC filtering
+```
+cd /Annotation
+
+./CatQC.sh
+
+Rscript TumorPurity.r
+./CNA_init.sh
+./DepthEval.sh
+Rscript NRPCC.r
+```
+This will produce a file called: *NRPCC.tsv*. Please create a copy, call it *NRPCC_manualAnno.tsv* and edit it to exclude samples that dont pass the quality check (you decide the thresold). **SEE EXAMPLE BELOW!**
+
+| Sample | ... | minCov | Exclusion |
+| --- | --- | --- | --- |
+| SRR... | ... |   30   | Tumor | <-- if QC fails for Tumor coverage
+| SRR... | ... |   30   | Normal | <-- if QC fails for normal coverage
+| SRR... | ... |   30   | Metastasis | <-- if the sample is from metastasis
+| SRR... | ... |   30   | Duplicate | <-- if QC the sample is a replicate
+
+After that you can finish annotating samples.
+```
+./SNP_annotation.sh
+./annoDelly.sh
+./CNA_GeneAnnotation.r
+```
+#### Downstream-analysis
+Run any script you like:
+```
+cd /Analysis
+
+Rscript <Script_name>
+```
 
 ## Data selection and inclusion criteria
 

@@ -1,13 +1,13 @@
 #!/bin/bash
 
-GENOME='/genome/canFam3.fa.gz'
-VCF='/vcf1/Filtred_Published1.vcf.gz'
+GENOME='/refFiles/genome/canFam3.fa.gz'
+VCF='/refFiles/vcf1/Filtred_Published1.vcf.gz'
 
 NORMAL=$1
 TUMOR=$2
 
-samtools mpileup -q 1 -f $genome 'BQRS/'$NORMAL -o $NORMAL'.mpileup' & \
-samtools mpileup -q 1 -f $genome 'BQRS/'$TUMOR -o $TUMOR'.mpileup'
+samtools mpileup -q 1 -f $GENOME 'BQRS/'$NORMAL'.ready.bam' -o $NORMAL'.mpileup' & \ 
+samtools mpileup -q 1 -f $GENOME 'BQRS/'$TUMOR'.ready.bam' -o $TUMOR'.mpileup'
 wait
 rm -r $NORMAL'-'$TUMOR
 mkdir 'Varscan/'$NORMAL'-'$TUMOR

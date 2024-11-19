@@ -1,11 +1,10 @@
 library(maftools)
 library(viridis)
 library(ggplot2)
-library(ggwordcloud)
 
 #### DEFINING THE DATA FOLDERS
 
-biop <- c('PRJNA752630')
+biop <- c('/Annotation/SNP/')
 tt <- c('B-cell Lymphoma')
 cds <- c(57)
 
@@ -14,7 +13,7 @@ cds <- c(57)
 mafs <- data.frame()
 clinical <- data.frame()
 for (n in 1:length(biop)) {
-	path2<-paste(biop[n],'/SNP/',sep='')
+	path2<-biop[n]
 	files2 <- list.files(path2)
 	files2=files2[!grepl(files2, pattern='outQC')]
 	files2=files2[!grepl(files2, pattern='meta')]
@@ -94,7 +93,8 @@ for (l in newf[sort(newf$means, index.return=TRUE)$ix,]$TumorType) {
 df_tmb <- data.frame(x=new_pos ,y=new_frame$new_count, tum=new_TT)
 n <- 1:length(tt)
 
-rects <- data.frame(xstart=seq(0,9), xend=seq(1,10), col=factor(rep(c(0,1),5)))
+#rects <- data.frame(xstart=seq(0,9), xend=seq(1,10), col=factor(rep(c(0,1),5)))
+rects <- data.frame(xstart=0, xend=1, col=0)
 
 ### CONSTRUCTIONG THE PLOT
 

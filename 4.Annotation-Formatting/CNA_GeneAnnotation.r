@@ -1,32 +1,29 @@
 options(java.parameters = "-Xmx7000m")
 
-library(xlsx)
 library(dplyr)
 library(GenomicRanges)
 library(rtracklayer)
 
-
-biop <- c('PRJNA752630')
-tt <- c('B-cell Lymphoma')
+tt <- c('B-Cell Lymphoma')
 
 #### READING DATA
 df <- data.frame()
-for (n in 1:length(biop)){
-	subFiles <- list.files(paste0(biop[n],'/TCN/'))
-	for (samp in subFiles) {
-		sample <- paste0(biop[n],'/TCN/',samp)
-		openStat <- read.table(sample, header=T)
-		colnames(openStat)[1]='Sample'
-		openStat$Istotype <- tt[n]
-		df <- rbind(df,openStat)
-	}
+
+subFiles <- list.files(paste0('TCN/'))
+for (samp in subFiles) {
+	sample <- paste0('TCN/',samp)
+	openStat <- read.table(sample, header=T)
+	colnames(openStat)[1]='Sample'
+	openStat$Istotype <- tt
+	df <- rbind(df,openStat)
 }
+
 rownames(df)<-NULL
 colnames(df)[9]='minor_cn'
 colnames(df)[1]='sample'
 
 #### READING GTF
-bt.genes <- rtracklayer::import('Canis_lupus_familiaris.CanFam3.1.104.gtf.gz')
+bt.genes <- rtracklayer::import('/refFiles/Canis_lupus_familiaris.CanFam3.1.104.gtf.gz')
 bt.genes <- subset(bt.genes, select=c(gene_id,gene_name))
 bt.genes <- data.frame(bt.genes)
 bt.genes <- unique(bt.genes[c('gene_id','gene_name','start','end','seqnames')])
