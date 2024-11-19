@@ -33,9 +33,9 @@ docker build -t canineatlas .
 cd CanineCancerAtlas/
 docker run -it --rm 
 	-v <PATH TO REPO>/CanineCancerAtlas/4.Annotation-Formatting/:/Annotation \
-	-v <PATH TO REPO>/CanineCancerAtlas/3.Preprocess-VariantCalling/:/WorkDir 
-	-v <PATH TO REPO>/CanineCancerAtlas/2.SupportFiles/:/refFiles 
-	-v <PATH TO REPO>/CanineCancerAtlas/5.Statistical\ Analysis/:/Analysis canineatlas 
+	-v <PATH TO REPO>/CanineCancerAtlas/3.Preprocess-VariantCalling/:/WorkDir \
+	-v <PATH TO REPO>/CanineCancerAtlas/2.SupportFiles/:/refFiles \
+	-v <PATH TO REPO>/CanineCancerAtlas/5.Statistical\ Analysis/:/Analysis canineatlas \
 ```
 
 ## Commands inside the docker container
