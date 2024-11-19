@@ -83,7 +83,7 @@ Rscript TumorPurity.r
 ./DepthEval.sh
 Rscript NRPCC.r
 ```
-This will produce a file called: *NRPCC.tsv*. Please create a copy, call it *NRPCC_manualAnno.tsv* and edit it to exclude samples that dont pass the quality check (you decide the thresold). **SEE EXAMPLE BELOW!**
+This will produce a file called: *NRPCC.tsv*. Please create a copy, call it *NRPCC_manualAnno.tsv* and edit it to exclude samples that dont pass the quality check (you decide the threshold). **SEE EXAMPLE BELOW!**
 
 | Sample | ... | minCov | Exclusion |
 | --- | --- | --- | --- |
