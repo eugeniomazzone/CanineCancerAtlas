@@ -35,7 +35,7 @@ docker run -it --rm
 	-v <PATH TO REPO>/CanineCancerAtlas/4.Annotation-Formatting/:/Annotation \
 	-v <PATH TO REPO>/CanineCancerAtlas/3.Preprocess-VariantCalling/:/WorkDir \
 	-v <PATH TO REPO>/CanineCancerAtlas/2.SupportFiles/:/refFiles \
-	-v <PATH TO REPO>/CanineCancerAtlas/5.Statistical\ Analysis/:/Analysis canineatlas \
+	-v <PATH TO REPO>/CanineCancerAtlas/5.Statistical\ Analysis/:/Analysis canineatlas 
 ```
 
 ## Commands inside the docker container
@@ -87,16 +87,22 @@ This will produce a file called: *NRPCC.tsv*. Please create a copy, call it *NRP
 
 | Sample | ... | minCov | Exclusion |
 | --- | --- | --- | --- |
-| SRR... | ... |   30   | Tumor | <-- if QC fails for Tumor coverage
-| SRR... | ... |   30   | Normal | <-- if QC fails for normal coverage
-| SRR... | ... |   30   | Metastasis | <-- if the sample is from metastasis
-| SRR... | ... |   30   | Duplicate | <-- if QC the sample is a replicate
+| SRR... | ... |   30   | Tumor | 
+| SRR... | ... |   30   | Normal |
+| SRR... | ... |   30   | Metastasis | 
+| SRR... | ... |   30   | Duplicate |
+
+Use "Tumor" if tumor coverage is to low.
+Use "Normal" if normal coverage is to low.
+Use "Metastasis" if sample is from metastatic tissue (and you want to exclude it).
+Use "Duplicate" if sample is from same tissue sample (and you want to exclude it).
+
 
 After that you can finish annotating samples.
 ```
 ./SNP_annotation.sh
 ./annoDelly.sh
-./CNA_GeneAnnotation.r
+Rscript CNA_GeneAnnotation.r
 ```
 #### Downstream-analysis
 Run any script you like:
