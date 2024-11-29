@@ -28,7 +28,7 @@ git clone https://github.com/eugeniomazzone/CanineCancerAtlas
 cd CanineCancerAtlas/1.Docker
 docker build -t canineatlas .
 ```
-- Then mount the image and all related directory.
+- Then mount the image and all related directory. (can take up to one hour to complete, based on hardware)
 ```
 cd CanineCancerAtlas/
 docker run -it --rm 
@@ -42,6 +42,7 @@ docker run -it --rm
 
 #### Reference Files
 - Collecting and indexing Reference files. This will download and index each file needed for preprocessing, variant calls and some analysis.
+  (Expected time of a couple of hours based on system specs.)
 ```
 cd /refFiles
 ./init_ref.sh
